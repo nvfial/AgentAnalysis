@@ -45,8 +45,8 @@ public abstract class AbstractJdbcDdl implements Ddl {
 
 	public abstract ResultSetBO scanTable(Connection connection, String schema, String table);
 
-	public String getSelectSql(String typeName, String tableName, String columnNames, int limit) {
-		return SqlUtil.buildSelectSql(typeName, tableName, columnNames, limit);
+	public String getSelectSql(String tableName, String columnNames, int limit) {
+		return SqlUtil.buildSelectSql(tableName, columnNames, limit);
 	}
 
 }

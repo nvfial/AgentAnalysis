@@ -13,39 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.ai.dataagent.enums;
+package com.alibaba.cloud.ai.dataagent.service.graph;
 
-public enum DbAccessTypeEnum {
+public class GraphRunnerException extends Exception {
 
-	JDBC("jdbc"),
-
-	MYSQL("mysql"),
-
-	POSTGRESQL("postgresql"),
-
-	ORACLE("oracle"),
-
-	H2("h2"),
-
-	SQLSERVER("sqlserver");
-
-	private final String code;
-
-	DbAccessTypeEnum(String code) {
-		this.code = code;
+	public GraphRunnerException(String message) {
+		super(message);
 	}
 
-	public String getCode() {
-		return code;
-	}
-
-	public static DbAccessTypeEnum fromCode(String code) {
-		for (DbAccessTypeEnum type : values()) {
-			if (type.code.equalsIgnoreCase(code)) {
-				return type;
-			}
-		}
-		return null;
+	public GraphRunnerException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 }

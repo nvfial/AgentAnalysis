@@ -35,7 +35,6 @@ target/
 # node_modules
 **/node_modules
 
-
 # windows os
 /extensions/
 /h2-data/
@@ -59,3 +58,17 @@ modified_mcp_config.json
 uploads/*
 vectorstore/*
 .java-version
+
+# Documentation files
+*.md
+!README.md
+!LICENSE
+
+# Frontend build output
+data-agent-ui/dist/
+
+# IDE specific files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

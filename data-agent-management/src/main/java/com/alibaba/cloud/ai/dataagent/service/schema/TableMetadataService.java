@@ -232,9 +232,8 @@ public class TableMetadataService {
 			List<ColumnInfoBO> columns) {
 
 		try {
-			// 构建批量查询SQL，一次查询多个列的样本数据
 			String columnNames = columns.stream().map(ColumnInfoBO::getName).collect(Collectors.joining(", "));
-			String sql = SqlUtil.buildSelectSql(dbConfig.getDialectType(), tableName, columnNames, 5);
+			String sql = SqlUtil.buildSelectSql(tableName, columnNames, 5);
 
 			DbQueryParameter batchParam = new DbQueryParameter();
 			batchParam.setSchema(dbConfig.getSchema());

@@ -15,14 +15,12 @@
  */
 package com.alibaba.cloud.ai.dataagent.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -50,26 +48,10 @@ public class Datasource {
 
 	private String status;
 
-	private String testStatus;
-
 	private String description;
 
-	private Long creatorId;
-
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime createTime;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime updateTime;
-
-	@Override
-	public String toString() {
-		return "Datasource{" + "id=" + id + ", name='" + name + '\'' + ", type='" + type + '\'' + ", host='" + host
-				+ '\'' + ", port=" + port + ", databaseName='" + databaseName + '\'' + ", status='" + status + '\''
-				+ ", testStatus='" + testStatus + '\'' + ", createTime=" + createTime + ", updateTime=" + updateTime
-				+ '}';
-	}
 
 }

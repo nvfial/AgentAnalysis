@@ -17,117 +17,66 @@ package com.alibaba.cloud.ai.dataagent.enums;
 
 public enum BizDataSourceTypeEnum {
 
-	MYSQL(1, "mysql", DatabaseDialectEnum.MYSQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	MYSQL("MySQL", "mysql", "jdbc", "mysql"),
 
-	POSTGRESQL(2, "postgresql", DatabaseDialectEnum.POSTGRESQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	POSTGRESQL("PostgreSQL", "postgresql", "jdbc", "postgresql"),
 
-	SQLITE(3, "sqlite", DatabaseDialectEnum.MYSQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	ORACLE("Oracle", "oracle", "jdbc", "oracle"),
 
-	H2(4, "h2", DatabaseDialectEnum.H2.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	H2("H2", "h2", "jdbc", "h2"),
 
-	/**
-	 * Dameng database (达梦)
-	 */
-	DAMENG(5, "dameng", DatabaseDialectEnum.DAMENG.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	SQLSERVER("SQLServer", "sqlserver", "jdbc", "mssql");
 
-	/**
-	 * SQL Server database
-	 */
-	SQL_SERVER(6, "sqlserver", DatabaseDialectEnum.SQL_SERVER.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	private final String description;
 
-	/**
-	 * Oracle database
-	 */
-	ORACLE(7, "oracle", DatabaseDialectEnum.ORACLE.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	private final String code;
 
-	/**
-	 * Hive database
-	 */
-	HIVE(8, "hive", DatabaseDialectEnum.HIVE.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	private final String protocol;
 
-	HOLOGRESS(10, "hologress", DatabaseDialectEnum.POSTGRESQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
+	private final String typeName;
 
-	MYSQL_VPC(11, "mysql-vpc", DatabaseDialectEnum.MYSQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
-
-	POSTGRESQL_VPC(12, "postgresql-vpc", DatabaseDialectEnum.POSTGRESQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
-
-	ADB_PG(21, "adg_pg", DatabaseDialectEnum.POSTGRESQL.getCode(), DbAccessTypeEnum.DATA_API.getCode()),
-
-	MAX_COMPUTE(31, "max_compute", DatabaseDialectEnum.MYSQL.getCode(), DbAccessTypeEnum.JDBC.getCode()),
-	// SQLite simulated database in function computation
-	FC_MEMORY_DB(41, "fc_memory_db", DatabaseDialectEnum.SQLite.getCode(), DbAccessTypeEnum.FC_HTTP.getCode()),
-
-	MYSQL_VIRTUAL(51, "mysql-virtual", DatabaseDialectEnum.MYSQL.getCode(), DbAccessTypeEnum.MEMORY.getCode()),
-
-	POSTGRESQL_VIRTUAL(52, "postgresql-virtual", DatabaseDialectEnum.POSTGRESQL.getCode(),
-			DbAccessTypeEnum.MEMORY.getCode());
-
-	public final Integer code;
-
-	public final String typeName;
-
-	public final String dialect;
-
-	public final String protocol;
-
-	BizDataSourceTypeEnum(Integer code, String typeName, String dialect, String protocol) {
+	BizDataSourceTypeEnum(String description, String code, String protocol, String typeName) {
+		this.description = description;
 		this.code = code;
-		this.typeName = typeName;
-		this.dialect = dialect;
 		this.protocol = protocol;
+		this.typeName = typeName;
 	}
 
-	public Integer getCode() {
+	public String getDescription() {
+		return description;
+	}
+
+	public String getCode() {
 		return code;
-	}
-
-	public String getTypeName() {
-		return typeName;
 	}
 
 	public String getProtocol() {
 		return protocol;
 	}
 
+	public String getTypeName() {
+		return typeName;
+	}
+
 	public String getDialect() {
-		return dialect;
+		return code;
 	}
 
-	/**
-	 * Get corresponding typeName based on code.
-	 * @param code code for which to get typeName
-	 * @return corresponding typeName, return null if not found.
-	 */
-	public static String getTypeNameByCode(Integer code) {
-		for (BizDataSourceTypeEnum type : values()) {
-			if (type.getCode().equals(code)) {
-				return type.getTypeName();
-			}
-		}
-		return null; // If corresponding code is not found, return null
+	public static boolean isSqlServerDialect(String typeName) {
+		return SQLSERVER.code.equalsIgnoreCase(typeName);
 	}
 
-	public static String getDialectByCode(Integer code) {
-		for (BizDataSourceTypeEnum type : values()) {
-			if (type.getCode().equals(code)) {
-				return type.getDialect();
-			}
-		}
-		return null; // If corresponding code is not found, return null
+	public static boolean isOracleDialect(String typeName) {
+		return ORACLE.code.equalsIgnoreCase(typeName);
 	}
 
-	public static String getProtocolByCode(Integer code) {
-		for (BizDataSourceTypeEnum type : values()) {
-			if (type.getCode().equals(code)) {
-				return type.getProtocol();
-			}
-		}
-		return null;
+	public static boolean isPgDialect(String typeName) {
+		return POSTGRESQL.code.equalsIgnoreCase(typeName);
 	}
 
-	public static BizDataSourceTypeEnum fromCode(Integer code) {
+	public static BizDataSourceTypeEnum fromCode(String code) {
 		for (BizDataSourceTypeEnum type : values()) {
-			if (type.getCode() == code) {
+			if (type.code.equalsIgnoreCase(code)) {
 				return type;
 			}
 		}
@@ -135,51 +84,15 @@ public enum BizDataSourceTypeEnum {
 	}
 
 	public static BizDataSourceTypeEnum fromTypeName(String typeName) {
+		if (typeName == null) {
+			return null;
+		}
 		for (BizDataSourceTypeEnum type : values()) {
-			if (type.getTypeName().equals(typeName)) {
+			if (type.typeName.equalsIgnoreCase(typeName) || type.name().equalsIgnoreCase(typeName)) {
 				return type;
 			}
 		}
-		return null;
-	}
-
-	public static boolean isMysqlDialect(String typeName) {
-		return isDialect(typeName, DatabaseDialectEnum.MYSQL.getCode());
-	}
-
-	public static boolean isSqlServerDialect(String typeName) {
-		return isDialect(typeName, DatabaseDialectEnum.SQL_SERVER.getCode());
-	}
-
-	public static boolean isPgDialect(String typeName) {
-		return isDialect(typeName, DatabaseDialectEnum.POSTGRESQL.getCode());
-	}
-
-	public static boolean isOracleDialect(String typeName) {
-		return isDialect(typeName, DatabaseDialectEnum.ORACLE.getCode());
-	}
-
-	public static boolean isAdbPg(String typeName) {
-		BizDataSourceTypeEnum te = fromTypeName(typeName);
-		if (te == null) {
-			return false;
-		}
-		if (DatabaseDialectEnum.POSTGRESQL.getCode().equalsIgnoreCase(te.getDialect())
-				&& DbAccessTypeEnum.DATA_API.getCode().equalsIgnoreCase(te.getProtocol())) {
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean isDialect(String typeName, String dialect) {
-		BizDataSourceTypeEnum te = fromTypeName(typeName);
-		if (te == null) {
-			return false;
-		}
-		if (dialect.equalsIgnoreCase(te.getDialect())) {
-			return true;
-		}
-		return false;
+		return fromCode(typeName);
 	}
 
 }

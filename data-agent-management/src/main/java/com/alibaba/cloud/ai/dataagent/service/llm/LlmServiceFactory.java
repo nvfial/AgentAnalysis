@@ -15,35 +15,29 @@
  */
 package com.alibaba.cloud.ai.dataagent.service.llm;
 
-import com.alibaba.cloud.ai.dataagent.properties.DataAgentProperties;
-import com.alibaba.cloud.ai.dataagent.service.aimodelconfig.AiModelRegistry;
-import com.alibaba.cloud.ai.dataagent.service.llm.impls.BlockLlmService;
-import com.alibaba.cloud.ai.dataagent.service.llm.impls.StreamLlmService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.FactoryBean;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
-public class LlmServiceFactory implements FactoryBean<LlmService> {
+public class LlmServiceFactory {
 
-	private final DataAgentProperties properties;
+	private final ChatClient chatClient;
 
-	private final AiModelRegistry aiModelRegistry;
-
-	@Override
-	public LlmService getObject() {
-		if (LlmServiceEnum.BLOCK.equals(properties.getLlmServiceType())) {
-			return new BlockLlmService(aiModelRegistry);
-		}
-		else {
-			return new StreamLlmService(aiModelRegistry);
-		}
+	public LlmServiceFactory(ChatClient.Builder chatClientBuilder) {
+		this.chatClient = chatClientBuilder
+			.defaultSystem("You are a helpful assistant.")
+			.build();
 	}
 
-	@Override
-	public Class<?> getObjectType() {
-		return LlmService.class;
+	public LlmService createLlmService(LlmServiceEnum type) {
+		if (LlmServiceEnum.BLOCK.equals(type)) {
+			return new BlockLlmService(chatClient);
+		}
+		return new StreamLlmService(chatClient);
+	}
+
+	public ChatClient getChatClient() {
+		return chatClient;
 	}
 
 }

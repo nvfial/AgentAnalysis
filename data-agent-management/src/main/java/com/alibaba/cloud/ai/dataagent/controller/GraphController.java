@@ -31,8 +31,7 @@ import static com.alibaba.cloud.ai.dataagent.constant.Constant.STREAM_EVENT_COMP
 import static com.alibaba.cloud.ai.dataagent.constant.Constant.STREAM_EVENT_ERROR;
 
 /**
- * @author zhangshenghang
- * @author vlsmb
+ * Graph Controller - SSE流式输出接口
  */
 @Slf4j
 @RestController
@@ -44,52 +43,43 @@ public class GraphController {
 	private final GraphService graphService;
 
 	@GetMapping(value = "/stream/search", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-	public Flux<ServerSentEvent<GraphNodeResponse>> streamSearch(@RequestParam("agentId") String agentId,
+	public Flux<ServerSentEvent<GraphNodeResponse>> streamSearch(@RequestParam("datasourceId") String datasourceId,
 			@RequestParam(value = "threadId", required = false) String threadId, @RequestParam("query") String query,
-			@RequestParam(value = "humanFeedback", required = false) boolean humanFeedback,
-			@RequestParam(value = "humanFeedbackContent", required = false) String humanFeedbackContent,
-			@RequestParam(value = "rejectedPlan", required = false) boolean rejectedPlan,
 			@RequestParam(value = "nl2sqlOnly", required = false) boolean nl2sqlOnly, ServerHttpResponse response) {
-		// Set SSE-related HTTP headers
 		response.getHeaders().add("Cache-Control", "no-cache");
 		response.getHeaders().add("Connection", "keep-alive");
-		response.getHeaders().add("Access-Control-Allow-Origin", "*");
+		response.getHeaders().add("X-Accel-Buffering", "no");
 
 		Sinks.Many<ServerSentEvent<GraphNodeResponse>> sink = Sinks.many().unicast().onBackpressureBuffer();
 
 		GraphRequest request = GraphRequest.builder()
-			.agentId(agentId)
+			.datasourceId(datasourceId)
 			.threadId(threadId)
 			.query(query)
-			.humanFeedback(humanFeedback)
-			.humanFeedbackContent(humanFeedbackContent)
-			.rejectedPlan(rejectedPlan)
 			.nl2sqlOnly(nl2sqlOnly)
 			.build();
 		graphService.graphStreamProcess(sink, request);
 
 		return sink.asFlux().filter(sse -> {
-			// 1. 如果 event 是 "complete" 或 "error"，直接放行（不管 text 是否为空）
 			if (STREAM_EVENT_COMPLETE.equals(sse.event()) || STREAM_EVENT_ERROR.equals(sse.event())) {
 				return true;
 			}
-			// 判断字符串是否为空
 			return sse.data() != null && sse.data().getText() != null && !sse.data().getText().isEmpty();
 		})
-			.doOnSubscribe(subscription -> log.info("Client subscribed to stream, threadId: {}", request.getThreadId()))
+			.doOnSubscribe(subscription -> log.info("Client subscribed, threadId: {}", request.getThreadId()))
 			.doOnCancel(() -> {
-				log.info("Client disconnected from stream, threadId: {}", request.getThreadId());
+				log.info("Client disconnected, threadId: {}", request.getThreadId());
 				if (request.getThreadId() != null) {
 					graphService.stopStreamProcessing(request.getThreadId());
 				}
 			})
 			.doOnError(e -> {
-				log.error("Error occurred during streaming, threadId: {}: ", request.getThreadId(), e);
+				log.error("Stream error, threadId: {}: ", request.getThreadId(), e);
 				if (request.getThreadId() != null) {
 					graphService.stopStreamProcessing(request.getThreadId());
 				}
 			})
-			.doOnComplete(() -> log.info("Stream completed successfully, threadId: {}", request.getThreadId()));
+			.doOnComplete(() -> log.info("Stream completed, threadId: {}", request.getThreadId()));
 	}
 
 }

@@ -32,12 +32,9 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 
 	private final ChatSessionMapper chatSessionMapper;
 
-	/**
-	 * Get session list by agent ID
-	 */
 	@Override
-	public List<ChatSession> findByAgentId(Integer agentId) {
-		return chatSessionMapper.selectByAgentId(agentId);
+	public List<ChatSession> findByDatasourceId(Integer datasourceId) {
+		return chatSessionMapper.selectByDatasourceId(datasourceId);
 	}
 
 	@Override
@@ -45,52 +42,33 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 		return chatSessionMapper.selectBySessionId(sessionId);
 	}
 
-	/**
-	 * Create a new session
-	 */
 	@Override
-	public ChatSession createSession(Integer agentId, String title, Long userId) {
+	public ChatSession createSession(Integer datasourceId, String title) {
 		String sessionId = UUID.randomUUID().toString();
-
-		ChatSession session = new ChatSession(sessionId, agentId, title != null ? title : "新会话", "active", userId);
+		ChatSession session = ChatSession.builder()
+			.id(sessionId)
+			.datasourceId(datasourceId)
+			.title(title != null ? title : "新会话")
+			.status("active")
+			.build();
 		chatSessionMapper.insert(session);
-
-		log.info("Created new chat session: {} for agent: {}", sessionId, agentId);
+		log.info("Created new chat session: {} for datasource: {}", sessionId, datasourceId);
 		return session;
 	}
 
-	/**
-	 * Clear all sessions for an agent
-	 */
 	@Override
-	public void clearSessionsByAgentId(Integer agentId) {
+	public void clearSessionsByDatasourceId(Integer datasourceId) {
 		LocalDateTime now = LocalDateTime.now();
-		int updated = chatSessionMapper.softDeleteByAgentId(agentId, now);
-		log.info("Cleared {} sessions for agent: {}", updated, agentId);
+		int updated = chatSessionMapper.softDeleteByDatasourceId(datasourceId, now);
+		log.info("Cleared {} sessions for datasource: {}", updated, datasourceId);
 	}
 
-	/**
-	 * Update the last activity time of a session
-	 */
 	@Override
 	public void updateSessionTime(String sessionId) {
 		LocalDateTime now = LocalDateTime.now();
 		chatSessionMapper.updateSessionTime(sessionId, now);
 	}
 
-	/**
-	 * 置顶/取消置顶会话
-	 */
-	@Override
-	public void pinSession(String sessionId, boolean isPinned) {
-		LocalDateTime now = LocalDateTime.now();
-		chatSessionMapper.updatePinStatus(sessionId, isPinned, now);
-		log.info("Updated pin status for session: {} to: {}", sessionId, isPinned);
-	}
-
-	/**
-	 * Rename session
-	 */
 	@Override
 	public void renameSession(String sessionId, String newTitle) {
 		LocalDateTime now = LocalDateTime.now();
@@ -98,9 +76,6 @@ public class ChatSessionServiceImpl implements ChatSessionService {
 		log.info("Renamed session: {} to: {}", sessionId, newTitle);
 	}
 
-	/**
-	 * Delete a single session
-	 */
 	@Override
 	public void deleteSession(String sessionId) {
 		LocalDateTime now = LocalDateTime.now();

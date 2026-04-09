@@ -13,34 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.ai.dataagent.service.llm.impls;
+package com.alibaba.cloud.ai.dataagent.service.llm;
 
-import com.alibaba.cloud.ai.dataagent.service.llm.LlmService;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import reactor.core.publisher.Flux;
 
-public class StreamLlmService implements LlmService {
+@Slf4j
+@AllArgsConstructor
+public class BlockLlmService implements LlmService {
 
 	private final ChatClient chatClient;
 
-	public StreamLlmService(ChatClient chatClient) {
-		this.chatClient = chatClient;
-	}
-
 	@Override
 	public Flux<ChatResponse> call(String system, String user) {
-		return chatClient.prompt().system(system).user(user).stream().chatResponse();
+		return chatClient.prompt()
+			.system(system)
+			.user(user)
+			.stream()
+			.chatResponse();
 	}
 
 	@Override
 	public Flux<ChatResponse> callSystem(String system) {
-		return chatClient.prompt().system(system).stream().chatResponse();
+		return chatClient.prompt()
+			.system(system)
+			.stream()
+			.chatResponse();
 	}
 
 	@Override
 	public Flux<ChatResponse> callUser(String user) {
-		return chatClient.prompt().user(user).stream().chatResponse();
+		return chatClient.prompt()
+			.user(user)
+			.stream()
+			.chatResponse();
 	}
 
 }

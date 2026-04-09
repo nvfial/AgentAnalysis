@@ -27,16 +27,17 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GraphNodeResponse {
 
-	private String agentId;
+	private String datasourceId;
 
 	private String threadId;
 
-	// 使用Constant常量
 	private String nodeName;
 
 	private TextType textType;
 
 	private String text;
+
+	private String event;
 
 	@Builder.Default
 	private boolean error = false;
@@ -44,9 +45,9 @@ public class GraphNodeResponse {
 	@Builder.Default
 	private boolean complete = false;
 
-	public static GraphNodeResponse error(String agentId, String threadId, String text) {
+	public static GraphNodeResponse error(String datasourceId, String threadId, String text) {
 		return GraphNodeResponse.builder()
-			.agentId(agentId)
+			.datasourceId(datasourceId)
 			.threadId(threadId)
 			.text(text)
 			.error(true)
@@ -54,9 +55,9 @@ public class GraphNodeResponse {
 			.build();
 	}
 
-	public static GraphNodeResponse complete(String agentId, String threadId) {
+	public static GraphNodeResponse complete(String datasourceId, String threadId) {
 		return GraphNodeResponse.builder()
-			.agentId(agentId)
+			.datasourceId(datasourceId)
 			.threadId(threadId)
 			.complete(true)
 			.textType(TextType.TEXT)

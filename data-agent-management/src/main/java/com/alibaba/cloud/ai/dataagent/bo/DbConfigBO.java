@@ -26,13 +26,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DbConfigBO {
 
-	private String schema;
+	private Integer id;
 
-	private String url;
+	private String name;
+
+	private String type;
+
+	private String host;
+
+	private Integer port;
+
+	private String database;
+
+	private String schema;
 
 	private String username;
 
 	private String password;
+
+	private String url;
 
 	private String connectionType;
 

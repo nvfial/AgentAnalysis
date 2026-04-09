@@ -15,85 +15,74 @@
  */
 package com.alibaba.cloud.ai.dataagent.prompt;
 
-import org.springframework.ai.chat.prompt.PromptTemplate;
+import java.util.Map;
 
-/**
- * Prompt constant class, dynamically loads prompt files
- *
- * @author zhangshenghang
- */
 public class PromptConstant {
 
-	// intent-recognition
-	public static PromptTemplate getIntentRecognitionPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("intent-recognition"));
+	private static final String NEW_SQL_GENERATE_TEMPLATE = """
+		你是一个NL2SQL专家。请根据用户的问题和数据库schema信息，生成准确的SQL查询语句。
+
+		数据库信息:
+		{datasourceId}
+
+		Schema上下文:
+		{schema_context}
+
+		用户问题: {query}
+
+		请生成SQL查询语句，只返回SQL代码，不要包含其他解释。
+
+		要求:
+		1. 只返回SQL语句
+		2. 如果无法回答，返回"无法回答该问题"
+		3. 确保SQL语法正确
+		""";
+
+	private static final String SCHEMA_RECALL_TEMPLATE = """
+		你是一个数据库专家。请根据用户的问题，从知识库中检索相关的数据库schema信息。
+
+		用户问题: {query}
+
+		数据库标识: {datasourceId}
+
+		请从向量知识库中检索相关的表结构信息。
+		""";
+
+	private static final String JSON_FIX_TEMPLATE = """
+		你是一个JSON修复专家。请修复以下JSON字符串中的语法错误。
+
+		原始JSON:
+		{json_string}
+
+		错误信息:
+		{error_message}
+
+		请只返回修复后的JSON字符串，不要包含其他解释或标记。
+		""";
+
+	public static String getNewSqlGeneratorPromptTemplate() {
+		return NEW_SQL_GENERATE_TEMPLATE;
 	}
 
-	// evidence-query-rewrite
-	public static PromptTemplate getEvidenceQueryRewritePromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("evidence-query-rewrite"));
+	public static String getSchemaRecallPromptTemplate() {
+		return SCHEMA_RECALL_TEMPLATE;
 	}
 
-	// agent-knowledge.txt
-	public static PromptTemplate getAgentKnowledgePromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("agent-knowledge"));
+	public static String getJsonFixPromptTemplate() {
+		return JSON_FIX_TEMPLATE;
 	}
 
-	public static PromptTemplate getQueryEnhancementPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("query-enhancement"));
-	}
-
-	// feasibility-assessment
-	public static PromptTemplate getFeasibilityAssessmentPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("feasibility-assessment"));
-	}
-
-	public static PromptTemplate getMixSelectorPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("mix-selector"));
-	}
-
-	public static PromptTemplate getSemanticConsistencyPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("semantic-consistency"));
-	}
-
-	public static PromptTemplate getNewSqlGeneratorPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("new-sql-generate"));
-	}
-
-	public static PromptTemplate getPlannerPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("planner"));
-	}
-
-	public static PromptTemplate getReportGeneratorPlainPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("report-generator-plain"));
-	}
-
-	public static PromptTemplate getSqlErrorFixerPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("sql-error-fixer"));
-	}
-
-	public static PromptTemplate getPythonGeneratorPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("python-generator"));
-	}
-
-	public static PromptTemplate getPythonAnalyzePromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("python-analyze"));
-	}
-
-	public static PromptTemplate getBusinessKnowledgePromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("business-knowledge"));
-	}
-
-	public static PromptTemplate getSemanticModelPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("semantic-model"));
-	}
-
-	public static PromptTemplate getJsonFixPromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("json-fix"));
-	}
-
-	public static PromptTemplate getDataViewAnalyzePromptTemplate() {
-		return new PromptTemplate(PromptLoader.loadPrompt("data-view-analyze"));
+	public static String render(String template, Map<String, String> variables) {
+		if (template == null || variables == null) {
+			return template;
+		}
+		String result = template;
+		for (Map.Entry<String, String> entry : variables.entrySet()) {
+			String placeholder = "{" + entry.getKey() + "}";
+			String value = entry.getValue() != null ? entry.getValue() : "";
+			result = result.replace(placeholder, value);
+		}
+		return result;
 	}
 
 }

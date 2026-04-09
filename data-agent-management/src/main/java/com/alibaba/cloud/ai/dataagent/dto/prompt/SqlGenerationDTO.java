@@ -15,7 +15,6 @@
  */
 package com.alibaba.cloud.ai.dataagent.dto.prompt;
 
-import com.alibaba.cloud.ai.dataagent.dto.schema.SchemaDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,7 @@ public class SqlGenerationDTO {
 
 	private String query;
 
-	private SchemaDTO schemaDTO;
+	private String schemaContext;
 
 	private String sql;
 

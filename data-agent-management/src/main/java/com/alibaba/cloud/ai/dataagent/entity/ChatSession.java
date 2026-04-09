@@ -30,30 +30,16 @@ import java.time.LocalDateTime;
 @Builder
 public class ChatSession {
 
-	private String id; // UUID
+	private String id;
 
-	private Integer agentId;
+	private Integer datasourceId;
 
 	private String title;
 
-	private String status; // active, archived, deleted
-
-	@Builder.Default
-	private Boolean isPinned = false; // Whether pinned
-
-	private Long userId;
+	private String status;
 
 	private LocalDateTime createTime;
 
 	private LocalDateTime updateTime;
-
-	public ChatSession(String id, Integer agentId, String title, String status, Long userId) {
-		this.id = id;
-		this.agentId = agentId;
-		this.title = title;
-		this.status = status;
-		this.isPinned = false;
-		this.userId = userId;
-	}
 
 }

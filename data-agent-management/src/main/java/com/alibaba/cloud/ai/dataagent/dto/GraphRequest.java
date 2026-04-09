@@ -26,17 +26,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GraphRequest {
 
-	private String agentId;
+	private String datasourceId;
 
 	private String threadId;
 
 	private String query;
-
-	private boolean humanFeedback;
-
-	private String humanFeedbackContent;
-
-	private boolean rejectedPlan;
 
 	private boolean nl2sqlOnly;
 

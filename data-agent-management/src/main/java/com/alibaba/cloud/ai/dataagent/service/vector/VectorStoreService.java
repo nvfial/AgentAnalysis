@@ -13,39 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.cloud.ai.dataagent.enums;
+package com.alibaba.cloud.ai.dataagent.service.vector;
 
-public enum DbAccessTypeEnum {
+public interface VectorStoreService {
 
-	JDBC("jdbc"),
-
-	MYSQL("mysql"),
-
-	POSTGRESQL("postgresql"),
-
-	ORACLE("oracle"),
-
-	H2("h2"),
-
-	SQLSERVER("sqlserver");
-
-	private final String code;
-
-	DbAccessTypeEnum(String code) {
-		this.code = code;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public static DbAccessTypeEnum fromCode(String code) {
-		for (DbAccessTypeEnum type : values()) {
-			if (type.code.equalsIgnoreCase(code)) {
-				return type;
-			}
-		}
-		return null;
-	}
+	String retrieveRelevantSchema(String query, String datasourceId);
 
 }

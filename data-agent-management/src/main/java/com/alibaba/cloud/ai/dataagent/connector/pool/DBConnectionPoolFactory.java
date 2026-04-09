@@ -15,15 +15,16 @@
  */
 package com.alibaba.cloud.ai.dataagent.connector.pool;
 
+import com.alibaba.cloud.ai.dataagent.bo.DbConfigBO;
+import com.alibaba.cloud.ai.dataagent.entity.Datasource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * DB connection pool factory
- */
+@Slf4j
 @Component
 public class DBConnectionPoolFactory {
 
@@ -41,11 +42,6 @@ public class DBConnectionPoolFactory {
 		return poolMap.containsKey(type);
 	}
 
-	/**
-	 * Get corresponding DB connection pool based on database type
-	 * @param type database type
-	 * @return DB connection pool
-	 */
 	public DBConnectionPool getPoolByType(String type) {
 		DBConnectionPool direct = poolMap.get(type);
 		if (direct != null) {
@@ -54,13 +50,39 @@ public class DBConnectionPoolFactory {
 		return poolMap.values().stream().filter(p -> p.supportedDataSourceType(type)).findFirst().orElse(null);
 	}
 
-	// todo: 写一层缓存
 	public DBConnectionPool getPoolByDbType(String type) {
 		return poolMap.values()
 			.stream()
 			.filter(p -> p.supportedDataSourceType(type))
 			.findFirst()
 			.orElseThrow(() -> new IllegalStateException("No DB connection pool found for type: " + type));
+	}
+
+	public boolean testConnection(Datasource datasource) {
+		DbConfigBO config = new DbConfigBO();
+		config.setId(datasource.getId());
+		config.setName(datasource.getName());
+		config.setType(datasource.getType());
+		config.setHost(datasource.getHost());
+		config.setPort(datasource.getPort());
+		config.setDatabase(datasource.getDatabaseName());
+		config.setSchema(datasource.getDatabaseName());
+		config.setUsername(datasource.getUsername());
+		config.setPassword(datasource.getPassword());
+		config.setUrl(datasource.getConnectionUrl());
+
+		try {
+			DBConnectionPool pool = getPoolByDbType(datasource.getType());
+			if (pool == null) {
+				log.warn("No connection pool found for datasource type: {}", datasource.getType());
+				return false;
+			}
+			return pool.ping(config) == com.alibaba.cloud.ai.dataagent.enums.ErrorCodeEnum.SUCCESS;
+		}
+		catch (Exception e) {
+			log.error("Test connection failed for datasource {}: {}", datasource.getId(), e.getMessage(), e);
+			return false;
+		}
 	}
 
 }

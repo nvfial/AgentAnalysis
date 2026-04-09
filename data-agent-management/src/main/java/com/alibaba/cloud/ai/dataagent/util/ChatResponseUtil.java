@@ -15,44 +15,23 @@
  */
 package com.alibaba.cloud.ai.dataagent.util;
 
-import com.alibaba.cloud.ai.dataagent.enums.TextType;
-import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.model.Generation;
 
-import java.util.List;
+public final class ChatResponseUtil {
 
-/**
- * @author zhangshenghang
- */
-public class ChatResponseUtil {
-
-	public static ChatResponse createResponse(String statusMessage) {
-		return createPureResponse(statusMessage + "\n");
+	private ChatResponseUtil() {
 	}
 
-	public static ChatResponse createPureResponse(String message) {
-		AssistantMessage assistantMessage = new AssistantMessage(message);
-		Generation generation = new Generation(assistantMessage);
-		return new ChatResponse(List.of(generation));
-	}
-
-	// 这样无法达到效果，先弃用。如果不得不需要这个逻辑，再重新定义
-	@Deprecated
-	public static ChatResponse createTrimResponse(String message, TextType textType) {
-		return createPureResponse(message.replace(textType.getStartSign(), "").replace(textType.getEndSign(), ""));
-	}
-
-	public static String getText(ChatResponse chatResponse) {
-		Generation result = chatResponse.getResult();
-		if (result == null) {
+	public static String getText(ChatResponse response) {
+		if (response == null || response.getResult() == null || response.getResult().getOutput() == null) {
 			return "";
 		}
-		AssistantMessage output = result.getOutput();
-		if (output == null) {
-			return "";
+		var output = response.getResult().getOutput();
+		if (output instanceof Message) {
+			return ((Message) output).getText();
 		}
-		return output.getText() == null ? "" : output.getText();
+		return String.valueOf(output);
 	}
 
 }

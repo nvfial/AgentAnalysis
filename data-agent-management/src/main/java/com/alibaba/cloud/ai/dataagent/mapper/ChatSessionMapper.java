@@ -24,56 +24,26 @@ import java.util.List;
 @Mapper
 public interface ChatSessionMapper {
 
-	/**
-	 * Query session list by agent ID
-	 */
 	@Select("""
 			SELECT * FROM chat_session
-			WHERE agent_id = #{agentId} AND status != 'deleted'
-			ORDER BY is_pinned DESC, update_time DESC
+			WHERE datasource_id = #{datasourceId} AND status != 'deleted'
+			ORDER BY update_time DESC
 			""")
-	List<ChatSession> selectByAgentId(@Param("agentId") Integer agentId);
+	List<ChatSession> selectByDatasourceId(@Param("datasourceId") Integer datasourceId);
 
-	/**
-	 * Query session details by session ID
-	 */
 	@Select("""
 			SELECT * FROM chat_session
 			WHERE id = #{sessionId} AND status != 'deleted'
 			""")
 	ChatSession selectBySessionId(@Param("sessionId") String sessionId);
 
-	/**
-	 * Update session
-	 */
-	@Update("""
-			<script>
-			UPDATE chat_session
-			<set>
-				<if test="title != null">title = #{title},</if>
-				<if test="status != null">status = #{status},</if>
-				<if test="isPinned != null">is_pinned = #{isPinned},</if>
-				<if test="userId != null">user_id = #{userId},</if>
-				update_time = NOW()
-			</set>
-			WHERE id = #{sessionId}
-			</script>
-			""")
-	int updateById(ChatSession session);
-
-	/**
-	 * Soft delete all sessions for an agent
-	 */
 	@Update("""
 			UPDATE chat_session
-			SET status = 'deleted', update_time = #{updateTime}
-			WHERE agent_id = #{agentId}
+			SET status = 'archived', update_time = #{updateTime}
+			WHERE datasource_id = #{datasourceId}
 			""")
-	int softDeleteByAgentId(@Param("agentId") Integer agentId, @Param("updateTime") LocalDateTime updateTime);
+	int softDeleteByDatasourceId(@Param("datasourceId") Integer datasourceId, @Param("updateTime") LocalDateTime updateTime);
 
-	/**
-	 * Update session time
-	 */
 	@Update("""
 			UPDATE chat_session
 			SET update_time = #{updateTime}
@@ -81,21 +51,6 @@ public interface ChatSessionMapper {
 			""")
 	int updateSessionTime(@Param("sessionId") String sessionId, @Param("updateTime") LocalDateTime updateTime);
 
-	/**
-	 * Update session pinned status
-	 */
-	@Update("""
-			UPDATE chat_session SET
-				is_pinned = #{isPinned},
-				update_time = #{updateTime}
-			WHERE id = #{sessionId}
-			""")
-	int updatePinStatus(@Param("sessionId") String sessionId, @Param("isPinned") boolean isPinned,
-			@Param("updateTime") LocalDateTime updateTime);
-
-	/**
-	 * Update session title
-	 */
 	@Update("""
 			UPDATE chat_session SET
 				title = #{title},
@@ -105,19 +60,16 @@ public interface ChatSessionMapper {
 	int updateTitle(@Param("sessionId") String sessionId, @Param("title") String title,
 			@Param("updateTime") LocalDateTime updateTime);
 
-	/**
-	 * Soft delete session
-	 */
 	@Update("""
 			UPDATE chat_session
-			SET status = 'deleted', update_time = #{updateTime}
+			SET status = 'archived', update_time = #{updateTime}
 			WHERE id = #{sessionId}
 			""")
 	int softDeleteById(@Param("sessionId") String sessionId, @Param("updateTime") LocalDateTime updateTime);
 
 	@Insert("""
-			INSERT INTO chat_session (id, agent_id, title, status, is_pinned, user_id, create_time, update_time)
-			VALUES (#{id}, #{agentId}, #{title}, #{status}, #{isPinned}, #{userId}, #{createTime}, #{updateTime})
+			INSERT INTO chat_session (id, datasource_id, title, status, create_time, update_time)
+			VALUES (#{id}, #{datasourceId}, #{title}, #{status}, NOW(), NOW())
 			""")
 	int insert(ChatSession session);
 

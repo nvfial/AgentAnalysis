@@ -25,14 +25,14 @@ import java.util.List;
 public interface ChatSessionService {
 
 	/**
-	 * Get session list by agent ID
+	 * Get session list by datasource ID
 	 */
-	List<ChatSession> findByAgentId(Integer agentId);
+	List<ChatSession> findByDatasourceId(Integer datasourceId);
 
 	/**
 	 * Create a new session
 	 */
-	ChatSession createSession(Integer agentId, String title, Long userId);
+	ChatSession createSession(Integer datasourceId, String title);
 
 	/**
 	 * Find session by id.
@@ -40,19 +40,14 @@ public interface ChatSessionService {
 	ChatSession findBySessionId(String sessionId);
 
 	/**
-	 * Clear all sessions for an agent
+	 * Clear all sessions for a datasource
 	 */
-	void clearSessionsByAgentId(Integer agentId);
+	void clearSessionsByDatasourceId(Integer datasourceId);
 
 	/**
 	 * Update the last activity time of a session
 	 */
 	void updateSessionTime(String sessionId);
-
-	/**
-	 * 置顶/取消置顶会话
-	 */
-	void pinSession(String sessionId, boolean isPinned);
 
 	/**
 	 * Rename session
