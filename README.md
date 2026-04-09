@@ -1,121 +1,146 @@
-<div align="center">
-  <p>中文 | <a href="./README-en.md">English</a></p>
-  <h1>Spring AI Alibaba DataAgent</h1>
-  <p>
-    <strong>基于 <a href="https://github.com/alibaba/spring-ai-alibaba" target="_blank">Spring AI Alibaba</a> 的企业级智能数据分析师</strong>
-  </p>
-  <p>
-     Text-to-SQL | Python 深度分析 | 智能报告 | MCP 服务器 | RAG 增强
-  </p>
-
-  <p>
-    <a href="https://github.com/alibaba/spring-ai-alibaba"><img src="https://img.shields.io/badge/Spring%20AI%20Alibaba-1.1.0.0-blue" alt="Spring AI Alibaba"></a>
-    <img src="https://img.shields.io/badge/Spring%20Boot-3.4.8+-green" alt="Spring Boot">
-    <img src="https://img.shields.io/badge/Java-17+-orange" alt="Java">
-    <img src="https://img.shields.io/badge/License-Apache%202.0-red" alt="License">
-    <a href="https://deepwiki.com/spring-ai-alibaba/DataAgent"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
-  </p>
-
-   <p>
-    <a href="#-项目简介">项目简介</a> • 
-    <a href="#-核心特性">核心特性</a> • 
-    <a href="#-快速开始">快速开始</a> • 
-    <a href="#-文档导航">文档导航</a> • 
-    <a href="#-加入社区--贡献">加入社区</a>
-  </p>
-</div>
-
-<br/>
+# NL2SQL 智能数据分析助手
 
 <div align="center">
-    <img src="img/LOGO.png" alt="DataAgent" width="1807" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+**基于 Spring AI Alibaba 的个人 NL2SQL 项目**
+
+*自然语言转 SQL | RAG 检索增强 | SSE 流式输出 | Vue 3 前端*
+
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.0-green)](https://spring.io/projects/spring-boot)
+[![Spring AI Alibaba](https://img.shields.io/badge/Spring%20AI%20Alibaba-1.0.0.4-blue)](https://github.com/alibaba/spring-ai-alibaba)
+[![Vue](https://img.shields.io/badge/Vue-3.4-42b883)](https://vuejs.org/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-red)](LICENSE)
+
 </div>
-
-<br/>
-
-## 📖 项目简介
-
-**DataAgent** 是一个基于 **Spring AI Alibaba Graph** 打造的企业级智能数据分析 Agent。它超越了传统的 Text-to-SQL 工具，进化为一个能够执行 **Python 深度分析**、生成 **多维度图表报告** 的 AI 智能数据分析师。
-
-系统采用高度可扩展的架构设计，**全面兼容 OpenAI 接口规范**的对话模型与 Embedding 模型，并支持**灵活挂载任意向量数据库**。无论是私有化部署还是接入主流大模型服务（如 Qwen, Deepseek），都能轻松适配，为企业提供灵活、可控的数据洞察服务。
-
-同时，本项目原生支持 **MCP (Model Context Protocol)**，可作为 MCP 服务器无缝集成到 Claude Desktop 等支持 MCP 的生态工具中。
-
-## ✨ 核心特性
-
-| 特性 | 说明 |
-| :--- | :--- |
-| **智能数据分析** | 基于 StateGraph 的 Text-to-SQL 转换，支持复杂的多表查询和多轮对话意图理解。 |
-| **Python 深度分析** | 内置 Docker/Local Python 执行器，自动生成并执行 Python 代码进行统计分析与机器学习预测。 |
-| **智能报告生成** | 分析结果自动汇总为包含 ECharts 图表的 HTML/Markdown 报告，所见即所得。 |
-| **人工反馈机制** | 独创的 Human-in-the-loop 机制，支持用户在计划生成阶段进行干预和调整。 |
-| **RAG 检索增强** | 集成向量数据库，支持对业务元数据、术语库的语义检索，提升 SQL生成准确率。 |
-| **多模型调度** | 内置模型注册表，支持运行时动态切换不同的 LLM 和 Embedding 模型。 |
-| **MCP 服务器** | 遵循 MCP 协议，支持作为 Tool Server 对外提供 NL2SQL 和 智能体管理能力。 |
-| **API Key 管理** | 完善的 API Key 生命周期管理，支持细粒度的权限控制。 |
-
-## 🏗️ 项目结构
-
-![dataagent-structure](img/dataagent-structure.png)
-
-
-## 🚀 快速开始
-
-> 详细的安装和配置指南请参考 [📑 快速开始文档](docs/QUICK_START.md)。
-
-### 1. 准备环境
-- JDK 17+
-- MySQL 5.7+
-- Node.js 16+
-
-### 2. 启动服务
-
-```bash
-# 1. 导入数据库
-mysql -u root -p < data-agent-management/src/main/resources/sql/schema.sql
-
-# 2. 启动后端
-cd data-agent-management
-./mvnw spring-boot:run
-
-# 3. 启动前端
-cd data-agent-frontend
-npm install && npm run dev
-```
-
-### 3. 访问系统
-打开浏览器访问 `http://localhost:3000`，开始创建您的第一个数据智能体！
-
-## 📚 文档导航
-
-| 文档 | 此文档包含的内容 |
-| :--- | :--- |
-| [快速开始](docs/QUICK_START.md) | 环境要求、数据库导入、基础配置、系统初体验 |
-| [架构设计](docs/ARCHITECTURE.md) | 系统分层架构、StateGraph与工作流设计、核心模块时序图 |
-| [开发者指南](docs/DEVELOPER_GUIDE.md) | 开发环境搭建、详细配置手册、代码规范、扩展开发(向量库/模型) |
-| [高级功能](docs/ADVANCED_FEATURES.md) | API Key 调用、MCP 服务器配置、自定义混合检索策略、Python执行器配置 |
-| [知识配置最佳实践](docs/KNOWLEDGE_USAGE.md) | 语义模型，业务知识，智能体知识的解释和使用 |
-
-## 🤝 加入社区 & 贡献
-
-- **钉钉交流群**: `154405001431` ("DataAgent用户1群") 部分用户可能因为账号安全问题无法加入，条件允许的情况下可换账号申请。
-- **贡献指南**: 欢迎社区贡献！请查阅 [开发者文档](docs/DEVELOPER_GUIDE.md) 了解如何提交 PR。
-
-## 📄 许可证
-
-本项目采用 Apache License 2.0 许可证。
-## Star 历史
-
-[![Star History Chart](https://api.star-history.com/svg?repos=spring-ai-alibaba/DataAgent&type=Date)](https://star-history.com/#spring-ai-alibaba/DataAgent&Date)
-
-## 贡献者名单
-
-<a href="https://github.com/spring-ai-alibaba/DataAgent/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=spring-ai-alibaba/DataAgent" />
-</a>
 
 ---
 
-<div align="center">
-    Made with ❤️ by Spring AI Alibaba DataAgent Team
-</div>
+## 📖 项目简介
+
+这是一个精简版的 **NL2SQL 智能数据分析助手**，基于 Spring AI Alibaba 实现自然语言转 SQL 查询功能。项目保留了核心能力，同时移除了复杂的企业级功能，适合个人学习和二次开发。
+
+### 核心技术栈
+
+| 技术 | 说明 |
+|:---|:---|
+| **后端** | Spring Boot 3.3.0 + Spring AI Alibaba 1.0.0.4 |
+| **前端** | Vue 3 + Element Plus + ECharts |
+| **数据库** | MySQL + Elasticsearch (向量存储) |
+| **AI 模型** | 阿里云 DashScope (通义千问) |
+| **流式输出** | Server-Sent Events (SSE) |
+
+---
+
+## ✨ 核心特性
+
+- 💬 **自然语言转 SQL**：用自然语言描述查询需求，自动生成 SQL 语句
+- 🔍 **RAG 检索增强**：基于向量数据库的 Schema 语义检索，提升 SQL 准确率
+- ⚡ **SSE 流式输出**：实时展示 AI 思考过程和生成结果
+- 📊 **Markdown 渲染**：SQL 代码高亮展示，支持表格数据可视化
+- 🗄️ **多数据源支持**：MySQL、PostgreSQL 等主流数据库
+- 💾 **会话管理**：支持多会话上下文记忆
+
+---
+
+## 🏗️ 项目结构
+
+```
+├── data-agent-management/     # 后端 Spring Boot 项目
+│   ├── src/main/java/
+│   │   └── com/alibaba/cloud/ai/dataagent/
+│   │       ├── controller/    # REST API 控制器
+│   │       ├── service/       # 业务服务层
+│   │       ├── entity/        # 实体类
+│   │       ├── mapper/        # MyBatis Mapper
+│   │       └── util/          # 工具类
+│   └── src/main/resources/
+│       └── application.yml    # 配置文件
+│
+└── data-agent-ui/             # 前端 Vue 3 项目
+    ├── src/
+    │   ├── App.vue           # 主组件
+    │   ├── main.js           # 入口文件
+    │   └── styles/           # 样式文件
+    └── vite.config.js        # Vite 配置
+```
+
+---
+
+## 🚀 快速开始
+
+### 环境要求
+
+- JDK 17+
+- Node.js 16+
+- MySQL 5.7+
+- Elasticsearch 8.x (可选，用于 RAG)
+
+### 1. 导入数据库
+
+```sql
+mysql -u root -p < data-agent-management/src/main/resources/sql/schema.sql
+```
+
+### 2. 配置环境变量
+
+```bash
+# 阿里云 DashScope API Key
+export DASHSCOPE_API_KEY=your-api-key
+
+# Elasticsearch 配置 (可选)
+export ELASTICSEARCH_HOST=127.0.0.1
+export ELASTICSEARCH_PORT=9200
+```
+
+### 3. 启动后端
+
+```bash
+cd data-agent-management
+mvn spring-boot:run
+# 服务运行在 http://localhost:8065
+```
+
+### 4. 启动前端
+
+```bash
+cd data-agent-ui
+npm install
+npm run dev
+# 前端运行在 http://localhost:5173
+```
+
+### 5. 访问系统
+
+打开浏览器访问 http://localhost:5173
+
+---
+
+## 📡 API 接口
+
+| 接口 | 方法 | 说明 |
+|:---|:---|:---|
+| `/api/datasources` | GET | 获取所有数据源 |
+| `/api/datasources` | POST | 创建数据源 |
+| `/api/datasources/{id}/test` | POST | 测试连接 |
+| `/api/datasource/{id}/sessions` | GET | 获取会话列表 |
+| `/api/sessions/{id}/messages` | GET | 获取消息历史 |
+| `/api/stream/search` | GET | SSE 流式 NL2SQL |
+
+---
+
+## 🎨 界面预览
+
+- **深色主题**：GitHub Dark 风格
+- **流式响应**：实时展示 AI 生成过程
+- **代码高亮**：SQL 语句语法高亮
+- **会话管理**：侧边栏快速切换会话
+
+---
+
+## 📝 License
+
+Apache License 2.0
+
+---
+
+*Made with ❤️ by NL2SQL Assistant*
